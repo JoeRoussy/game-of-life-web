@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
     var gameRoot = document.getElementById('gameRoot')
     populateGridElements(gameRoot, GAME_ROOT_LENGTH, CELL_LENGTH)
 
-    // TODO: Set interval for each iteration of the game
+    // Run game at 30 FPS
+    setInterval(onGameTick, 1/30*1000)
 
 })
 
@@ -56,7 +57,6 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
     }
 }
 
-// TODO: Create function to run on each iteration of the game
 function onGameTick(gameRootLength) {
     for (var i=0; i<gameRootLength; i++) {
         for(var j=0; j<gameRootLength; i++) {
