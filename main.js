@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function (e) {
 
+    // TODO: Should these be properties on the window object?
     var GAME_ROOT_LENGTH = 70
     var CELL_LENGTH = 10
 
@@ -19,6 +20,8 @@ function initializeGameState(numberOfRows, numberOfCellsPerRow) {
         gameState[i] = new Array(numberOfCellsPerRow)
     }
 
+    // TODO: Should the gameState be a property of the window object or should we pass
+    // it around?
     window.gameState = gameState
 }
 
@@ -33,7 +36,6 @@ function getDiv(className) {
 }
 
 function populateGridElements(gameRoot, gameRootLength, cellLength) {
-
     for (var i=0; i<gameRootLength; i++) {
         var newRow = getDiv('row')
 
@@ -55,3 +57,10 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
 }
 
 // TODO: Create function to run on each iteration of the game
+function onGameTick(gameRootLength) {
+    for (var i=0; i<gameRootLength; i++) {
+        for(var j=0; j<gameRootLength; i++) {
+            // TODO: Count number of 'on' cells adjacent to this one and set this cell according to the rules of the game
+        }
+    }
+}
