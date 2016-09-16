@@ -53,7 +53,7 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
 
             newCell.style.left = j*cellLength + 'px'
             newCell.setAttribute('data-x-coordinate', i)
-            newCell.setAttribute('data-y-coorderinate', j)
+            newCell.setAttribute('data-y-coorderinate', j) //TODO: Fix spelling
             newRow.appendChild(newCell)
             window.gameState[i][j] = newCell
         }
