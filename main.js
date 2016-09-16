@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function (e) {
 
+    // TODO: Try and fit more squares in the canvas and start off with less cells that are alive.
+
     // TODO: Should these be properties on the window object?
     var GAME_ROOT_LENGTH = 70
     var CELL_LENGTH = 10
