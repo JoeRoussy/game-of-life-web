@@ -1,19 +1,21 @@
-#gameWrapper {
+#gameRoot {
     height: 700px;
     width: 700px;
     margin: 50px auto 0 auto;
+    position: relative;
 }
 
 .row {
-    position: relative;
+    position: absolute;
 }
 
 .cell {
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border: solid 1px black;
     position: absolute;
+    top: 0
 }
 
 .cell.on {
