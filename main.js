@@ -53,7 +53,7 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
 
             newCell.style.left = j*cellLength + 'px'
             newCell.setAttribute('data-x-coordinate', i)
-            newCell.setAttribute('data-y-coorderinate', j) //TODO: Fix spelling
+            newCell.setAttribute('data-y-coordinate', j)
             newRow.appendChild(newCell)
             window.gameState[i][j] = newCell
         }
@@ -93,7 +93,7 @@ function getStateByCount(isCurrentlyAlive, numberOfNeighbours) {
 
 function getNeighbourCount(cell) {
     var currentX = Number(cell.getAttribute('data-x-coordinate'))
-    var currentY = Number(cell.getAttribute('data-y-coorderinate'))
+    var currentY = Number(cell.getAttribute('data-y-coordinate'))
     var count = 0
 
     // TODO: Try to find a more elegant way to inspect all 8 neighbours
