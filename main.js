@@ -68,7 +68,7 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
             newCell.setAttribute('data-x-coordinate', i)
             newCell.setAttribute('data-y-coordinate', j)
             newRow.appendChild(newCell)
-            window.gameState[i][j] = newCell
+            gameState[i][j] = newCell
         }
 
         newRow.style.top = i*cellLength + 'px'
@@ -178,8 +178,8 @@ function setCellState(cell) {
 
 function onGameTick(gameRootLength) {
     for (var i=0; i<gameRootLength; i++) {
-        for(var j=0; j<gameRootLength; j++) {
-            setCellState(window.gameState[i][j])
+        for (var j=0; j<gameRootLength; j++) {
+            setCellState(gameState[i][j])
         }
     }
 }
