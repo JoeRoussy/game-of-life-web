@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
     // Run game at 30 FPS
     setInterval(function() {
         onGameTick(GAME_ROOT_LENGTH)
-    }, 1/30*1000)
+    }, 1/60*1000)
 
 })
 
@@ -30,8 +30,10 @@ function initializeGameState(numberOfRows, numberOfCellsPerRow) {
     window.gameState = gameState
 }
 
+// Has a probability of 0.05 to return true
+// TODO: Allow users to input their own value for the probability a cell begins as on
 function randomBinary() {
-    return Math.floor(Math.random() + 0.5)
+    return !!Math.floor(Math.random() <= 0.05)
 }
 
 function getDiv(className) {
