@@ -109,7 +109,10 @@ function getNeighbourCount(cell) {
     var currentY = Number(cell.getAttribute('data-y-coordinate'))
     var count = 0
 
-    // TODO: Try to find a more elegant way to inspect all 8 neighbours
+    // TODO: Try to find a more elegant way to inspect all 8 neighbours. Maybe
+    // defining the rules using a config object would be better. Each rule in the config
+    // would have a coordinate defining the relative position of the cell to test for being on
+
     // Top left
     if (gameState[currentX-1] && gameState[currentX-1][currentY-1]) {
         if (gameState[currentX-1][currentY-1].classList.contains('on')) {
@@ -119,7 +122,7 @@ function getNeighbourCount(cell) {
     // Above
     if (gameState[currentX][currentY-1]) {
         if (gameState[currentX][currentY-1].classList.contains('on')) {
-            count++;
+            count++
         }
     }
     // Top right
