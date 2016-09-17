@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function (e) {
 
-    // TODO: Try and fit more squares in the canvas and start off with less cells that are alive.
+    // TODO: Try and fit more squares in the canvas
+
+    // TODO: Remove uneeded references to the window object
 
     // TODO: Should these be properties on the window object?
     var GAME_ROOT_LENGTH = 70
@@ -11,10 +13,19 @@ document.addEventListener('DOMContentLoaded', function (e) {
     var gameRoot = document.getElementById('gameRoot')
     populateGridElements(gameRoot, GAME_ROOT_LENGTH, CELL_LENGTH)
 
-    // Run game at 30 FPS
+    // Try and run game at 30 FPS
+    // NOTE: Basic tests showed the game runs at 20FPS on my machine
+    // with a full board (50ms per frame). Note that with an empty, static
+    // board, the game runs a 28FPS (35ms per frame).
+
+    // TODO: Try seeing if keeping a virtual representation of the DOM yields better performance
+    // than caching actual DOM elements. These virtual DOM elements should have all the values we
+    // are interested in (coordinates, isOn etc.) and a reference to the real DOM element it represents.
+    // The DOM should only be used when nessesary (such as when the state of a cell needs to change, and at
+    // the begining of the game during set up).
     setInterval(function() {
         onGameTick(GAME_ROOT_LENGTH)
-    }, 1/60*1000)
+    }, 1/30*1000)
 
 })
 
