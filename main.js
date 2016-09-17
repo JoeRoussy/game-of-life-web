@@ -1,9 +1,5 @@
 document.addEventListener('DOMContentLoaded', function (e) {
 
-    // TODO: Try and fit more squares in the canvas
-
-    // TODO: Remove uneeded references to the window object
-
     // TODO: Should these be properties on the window object?
     var GAME_ROOT_LENGTH = 70
     var CELL_LENGTH = 10
@@ -52,7 +48,9 @@ function initializeGameState(numberOfRows, numberOfCellsPerRow) {
 }
 
 // Has a probability of 0.05 to return true
-// TODO: Allow users to input their own value for the probability a cell begins as on
+// TODO: Allow users to input their own value for the probability a cell begins as on.
+// Should probably implement a build process since form validation and listeners that would
+// go along with this should be broken out in a separate module.
 function randomBinary() {
     return !!Math.floor(Math.random() <= 0.05)
 }
