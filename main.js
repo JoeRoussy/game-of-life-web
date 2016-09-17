@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
     var GAME_ROOT_LENGTH = 70
     var CELL_LENGTH = 10
 
+    window.timeStamp = +new Date()
+
     initializeGameState(GAME_ROOT_LENGTH, GAME_ROOT_LENGTH)
 
     var gameRoot = document.getElementById('gameRoot')
@@ -177,6 +179,10 @@ function setCellState(cell) {
 }
 
 function onGameTick(gameRootLength) {
+    var currentTime = +new Date()
+    console.log(currentTime - timeStamp)
+    timeStamp = currentTime
+
     for (var i=0; i<gameRootLength; i++) {
         for (var j=0; j<gameRootLength; j++) {
             setCellState(gameState[i][j])
