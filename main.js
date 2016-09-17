@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
     // with a full board (50ms per frame). Note that with an empty, static
     // board, the game runs a 28FPS (35ms per frame).
 
+    // NOTE: Implementing a virtual representation of the DOM improved game performance.
+    // Previsouly, the DOM was queried at multiple time per frame. Now, we only interact
+    // with the DOM when the state of the cell is changed (which is at most, once per frame
+    // for every cell). After implementing this change, the game runs at about 28FPS (35ms
+    // per frame) regardless of board state.
+
     // TODO: Try seeing if keeping a virtual representation of the DOM yields better performance
     // than caching actual DOM elements. These virtual DOM elements should have all the values we
     // are interested in (coordinates, isOn etc.) and a reference to the real DOM element it represents.
@@ -61,16 +67,27 @@ function populateGridElements(gameRoot, gameRootLength, cellLength) {
 
         for (var j=0; j<gameRootLength; j++) {
             var newCell = getDiv('cell')
+            var isOn = randomBinary()
 
-            if (randomBinary()) {
+            if (isOn) {
                 newCell.classList.add('on')
             }
 
             newCell.style.left = j*cellLength + 'px'
-            newCell.setAttribute('data-x-coordinate', i)
-            newCell.setAttribute('data-y-coordinate', j)
             newRow.appendChild(newCell)
-            gameState[i][j] = newCell
+
+            // Each element of the game state is a representation of the cell at
+            // the same position on the game board, with useful aspects of the cell's
+            // state included to minimize DOM queries. The DOM element itself is also
+            // cached in case its state (on or off) needs to be changed.
+            gameState[i][j] = {
+                isOn,
+                position: {
+                    x: i,
+                    y: j
+                },
+                domElement: newCell
+            }
         }
 
         newRow.style.top = i*cellLength + 'px'
@@ -107,8 +124,8 @@ function getStateByCount(isCurrentlyAlive, numberOfNeighbours) {
 }
 
 function getNeighbourCount(cell) {
-    var currentX = Number(cell.getAttribute('data-x-coordinate'))
-    var currentY = Number(cell.getAttribute('data-y-coordinate'))
+    var currentX = cell.position.x
+    var currentY = cell.position.y
     var count = 0
 
     // TODO: Try to find a more elegant way to inspect all 8 neighbours. Maybe
@@ -117,49 +134,49 @@ function getNeighbourCount(cell) {
 
     // Top left
     if (gameState[currentX-1] && gameState[currentX-1][currentY-1]) {
-        if (gameState[currentX-1][currentY-1].classList.contains('on')) {
+        if (gameState[currentX-1][currentY-1].isOn) {
             count++
         }
     }
     // Above
     if (gameState[currentX][currentY-1]) {
-        if (gameState[currentX][currentY-1].classList.contains('on')) {
+        if (gameState[currentX][currentY-1].isOn) {
             count++
         }
     }
     // Top right
     if (gameState[currentX+1] && gameState[currentX+1][currentY-1]) {
-        if (gameState[currentX+1][currentY-1].classList.contains('on')) {
+        if (gameState[currentX+1][currentY-1].isOn) {
             count++
         }
     }
     // Left
     if (gameState[currentX-1] && gameState[currentX-1][currentY]) {
-        if (gameState[currentX-1][currentY].classList.contains('on')) {
+        if (gameState[currentX-1][currentY].isOn) {
             count++
         }
     }
     // Right
     if (gameState[currentX+1] && gameState[currentX+1][currentY]) {
-        if (gameState[currentX+1][currentY].classList.contains('on')) {
+        if (gameState[currentX+1][currentY].isOn) {
             count++
         }
     }
     // Bottom left
     if (gameState[currentX-1] && gameState[currentX-1][currentY+1]) {
-        if (gameState[currentX-1][currentY+1].classList.contains('on')) {
+        if (gameState[currentX-1][currentY+1].isOn) {
             count++
         }
     }
     // Below
     if (gameState[currentX][currentY+1]) {
-        if (gameState[currentX][currentY+1].classList.contains('on')) {
+        if (gameState[currentX][currentY+1].isOn) {
             count++
         }
     }
     // Bottom right
     if (gameState[currentX+1] && gameState[currentX+1][currentY+1]) {
-        if (gameState[currentX+1][currentY+1].classList.contains('on')) {
+        if (gameState[currentX+1][currentY+1].isOn) {
             count++
         }
     }
@@ -168,13 +185,17 @@ function getNeighbourCount(cell) {
 }
 
 function setCellState(cell) {
-    var isCurrentlyAlive = cell.classList.contains('on')
-    var numberOfNeighbours = getNeighbourCount(cell)
+    var newState = getStateByCount(cell.isOn, getNeighbourCount(cell))
 
-    if (getStateByCount(isCurrentlyAlive, numberOfNeighbours)) {
-        cell.classList.add('on')
-    } else {
-        cell.classList.remove('on')
+    if (newState !== cell.isOn) {
+        // Must interact with the DOM to update color of cell.
+        if (newState) {
+            cell.domElement.classList.add('on')
+            cell.isOn = true
+        } else {
+            cell.domElement.classList.remove('on')
+            cell.isOn = false
+        }
     }
 }
 
