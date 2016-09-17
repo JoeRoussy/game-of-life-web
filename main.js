@@ -24,7 +24,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
     // Previsouly, the DOM was queried at multiple time per frame. Now, we only interact
     // with the DOM when the state of the cell is changed (which is at most, once per frame
     // for every cell). After implementing this change, the game runs at about 28FPS (35ms
-    // per frame) regardless of board state.
+    // per frame) regardless of board state. As the game runs for a long period of time with
+    // many changes happening per frame, each frame can take up to 40ms. However, reducing the
+    // number of DOM queries was still helpful as frames with a busy board used to take 50ms.
 
     // TODO: Try seeing if keeping a virtual representation of the DOM yields better performance
     // than caching actual DOM elements. These virtual DOM elements should have all the values we
