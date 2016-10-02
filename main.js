@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function (e) {
 
-    // TODO: Should these be properties on the window object?
     var GAME_ROOT_LENGTH = 70
     var CELL_LENGTH = 10
 
@@ -9,24 +8,30 @@ document.addEventListener('DOMContentLoaded', function (e) {
     var gameRoot = document.getElementById('gameRoot')
     populateGridElements(gameRoot, GAME_ROOT_LENGTH, CELL_LENGTH)
 
-    // Try and run game at 30 FPS
-    // NOTE: Basic tests showed the game runs at 20FPS on my machine
-    // with a full board (50ms per frame). Note that with an empty, static
-    // board, the game runs a 28FPS (35ms per frame).
+    // NOTE: We use a virtual representation of the DOM to improve game performance.
+    // In previous versions, the DOM was queried at multiple time per frame since key information
+    // about a cell such as its state and position on the board were stored only in its class list
+    // and data attributes respectively. However, this method of state managements was replaced with
+    // a single 2D array containing an object for each cell on the board. Each object contains
+    // the state and position of the cell along with a reference to the associated DOM element.
+    // Thus, we only interact with the DOM when the state of the cell is changed (which
+    // is at most, once per frame for every cell and amounts to changing an element's classList).
+    // We refer to the associated elements in the store for queries about an elements position and state.
+    // The caused a 42% decrease in the time taken to run a single frame. Note that a frame is the amount
+    // of time it takes to update all cells on the board, or in other words, a round of the game.
+    //
+    // Interestingly, when the virtual DOM was not used, the performance of the game was dependent
+    // on how much activity was occuring on the board. However, the frame rate when using the virtual
+    // DOM representation remains rather constent for all amounts of board activity. This does not make
+    // sense as each cell is examined in the same way regardless of whether its state is going to be changed.
+    // Since there was a universal reduction in the amount of DOM queries executed during a frame, we would
+    // not expect to see even more performance benefits during times of high board activity. Addressing this
+    // issue also reuqires an explination for why more board activity caused the game to run slower even though
+    // the DOM was queried the same amount of times per frame regardless of how many cells were changing state.
+    // Perhaps the answer lies in some kind of caching used by the DOM wherein queries on a cell that was not
+    // changing state were faster than on one that changed state frequently, an effect which went away once
+    // queries on game state were on a store with O(1) time complexity for queries.
 
-    // NOTE: Implementing a virtual representation of the DOM improved game performance.
-    // Previsouly, the DOM was queried at multiple time per frame. Now, we only interact
-    // with the DOM when the state of the cell is changed (which is at most, once per frame
-    // for every cell). After implementing this change, the game runs at about 28FPS (35ms
-    // per frame) regardless of board state. As the game runs for a long period of time with
-    // many changes happening per frame, each frame can take up to 40ms. However, reducing the
-    // number of DOM queries was still helpful as frames with a busy board used to take 50ms.
-
-    // TODO: Try seeing if keeping a virtual representation of the DOM yields better performance
-    // than caching actual DOM elements. These virtual DOM elements should have all the values we
-    // are interested in (coordinates, isOn etc.) and a reference to the real DOM element it represents.
-    // The DOM should only be used when nessesary (such as when the state of a cell needs to change, and at
-    // the begining of the game during set up).
     setInterval(function() {
         onGameTick(GAME_ROOT_LENGTH)
     }, 1/30*1000)
@@ -41,7 +46,8 @@ function initializeGameState(numberOfRows, numberOfCellsPerRow) {
     }
 
     // TODO: Should the gameState be a property of the window object or should we pass
-    // it around?
+    // it around? Instead, consider passing it into the onGameTick function and having
+    // that function modify it.
     window.gameState = gameState
 }
 
@@ -54,7 +60,7 @@ function randomBinary() {
 }
 
 function getDiv(className) {
-    var el = document.createElement('DIV')
+    var el = document.createElement('div')
     el.classList.add(className)
     return el
 }
